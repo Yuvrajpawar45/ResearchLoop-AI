@@ -10,6 +10,16 @@ RUN apt-get update && apt-get install -y curl gnupg \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
+# Install the MCP server packages globally AT BUILD TIME, not via npx at
+# runtime. Runtime `npx -y <pkg>` was causing production failures: parallel
+# Send() branches racing to download+extract into the same npx cache
+# directory simultaneously corrupted it permanently (ENOTEMPTY / TAR_ENTRY
+# errors, then ERR_MODULE_NOT_FOUND forever after, since npx doesn't
+# auto-detect or repair a corrupted cache entry). Installing globally here
+# means the packages are baked into the image as verified, immutable files —
+# no runtime download, no cache directory for concurrent requests to race on.
+RUN npm install -g tavily-mcp @modelcontextprotocol/server-github
+
 WORKDIR /app
 
 COPY requirements.txt .
