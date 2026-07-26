@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ResearchLoop AI — Ask once. Loop through everything.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EAE6DC;
+    --paper-2: #F4F1E8;
+    --card: #FBF9F3;
+    --ink: #2B2420;
+    --ink-soft: #6B5D4F;
+    --rule: #C9C2AE;
+    --stamp: #A8721C;
+    --stamp-soft: #A8721C22;
+    --pine: #3C6E52;
+    --pine-soft: #3C6E5222;
+    --serif: 'Source Serif 4', serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    background-image: linear-gradient(var(--rule) 1px, transparent 1px);
+    background-size: 100% 32px;
+  }
+  a { color: inherit; }
+
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.5rem 2rem; max-width: 1100px; margin: 0 auto;
+  }
+  .logo {
+    font-family: var(--serif); font-weight: 700; font-size: 1.3rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .logo svg { width: 24px; height: 24px; }
+  nav ul { list-style: none; display: flex; gap: 1.75rem; font-size: 0.9rem; }
+  nav ul a { text-decoration: none; color: var(--ink-soft); border-bottom: 1px solid transparent; padding-bottom: 2px; }
+  nav ul a:hover { border-color: var(--stamp); color: var(--ink); }
+
+  header.hero {
+    max-width: 700px; margin: 0 auto; padding: 3rem 2rem 4rem; text-align: left;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--stamp); margin-bottom: 1rem;
+    display: inline-block; border: 1px solid var(--stamp); padding: 0.25rem 0.6rem;
+    border-radius: 3px;
+  }
+  h1 {
+    font-family: var(--serif); font-size: 3rem; font-weight: 600; line-height: 1.08;
+    margin-bottom: 1.1rem; letter-spacing: -0.01em;
+  }
+  h1 em { color: var(--stamp); font-style: italic; }
+  .hero p.lede { font-size: 1.08rem; color: var(--ink-soft); max-width: 46ch; margin-bottom: 1.75rem; }
+  .cta-row { display: flex; gap: 1rem; align-items: center; }
+  .btn {
+    font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
+    background: var(--ink); color: var(--paper-2); border: none;
+    padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer;
+    text-decoration: none; display: inline-block;
+  }
+  .btn:hover { background: var(--stamp); }
+  .btn-ghost { color: var(--ink-soft); font-size: 0.9rem; font-family: var(--mono); }
+
+  .loop-wrap { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+  #loopSvg { width: 100%; max-width: 320px; }
+  .loop-node circle { fill: var(--card); stroke: var(--ink); stroke-width: 1.5; }
+  .loop-node text { font-family: var(--mono); font-size: 11px; fill: var(--ink); }
+  .loop-node .label { font-family: var(--sans); font-weight: 600; font-size: 13px; }
+  .loop-path { fill: none; stroke: var(--ink-soft); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  .loop-subdot { fill: var(--rule); stroke: var(--ink-soft); stroke-width: 1; }
+  .loop-node.active circle { stroke: var(--stamp); stroke-width: 2.5; }
+  .loop-node.active .label { fill: var(--stamp); }
+  .loop-node.done circle { stroke: var(--pine); fill: var(--pine-soft); }
+  .loop-subdot.active { fill: var(--stamp); }
+  .loop-subdot.done { fill: var(--pine); }
+
+  .stats {
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem 4rem;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--rule); border: 1px solid var(--rule);
+  }
+  .stat { background: var(--card); padding: 1.25rem 1.5rem; }
+  .stat .num { font-family: var(--serif); font-size: 1.8rem; font-weight: 600; }
+  .stat .lbl { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+
+  section { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem; }
+  .section-eyebrow { font-family: var(--mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--stamp); margin-bottom: 0.5rem; }
+  h2 { font-family: var(--serif); font-size: 2rem; font-weight: 600; margin-bottom: 2.5rem; max-width: 30ch; }
+  #what h2 { margin-bottom: 1rem; }
+  .section-lede { font-size: 0.98rem; color: var(--ink-soft); max-width: 60ch; margin-bottom: 2.5rem; }
+
+  .icon-badge {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .icon-badge.gold { background: var(--stamp-soft); color: var(--stamp); }
+  .icon-badge.pine { background: var(--pine-soft); color: var(--pine); }
+  .icon-badge.ink { background: #2B242014; color: var(--ink); }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 1.5rem; position: relative;
+  }
+  .card::before {
+    content: ''; position: absolute; top: -6px; left: 20px; width: 24px; height: 12px;
+    background: var(--paper-2); border: 1px solid var(--rule); border-bottom: none;
+    clip-path: polygon(0 100%, 100% 100%, 80% 0, 20% 0);
+  }
+  .card h3 { font-family: var(--sans); font-size: 1.02rem; margin-bottom: 0.5rem; }
+  .card p { font-size: 0.88rem; color: var(--ink-soft); }
+  .card .tag { font-family: var(--mono); font-size: 0.7rem; color: var(--stamp); margin-bottom: 0.6rem; display: block; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .chip {
+    font-family: var(--mono); font-size: 0.78rem; padding: 0.4rem 0.8rem;
+    border: 1px solid var(--ink); border-radius: 999px; background: var(--card);
+  }
+
+  #demo { background: var(--paper-2); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+  input[type=text] {
+    width: 100%; padding: 0.8rem 1rem; font-family: var(--sans); font-size: 0.95rem;
+    border: 1px solid var(--ink); border-radius: 4px; background: var(--card); color: var(--ink);
+  }
+  .examples { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .example-btn {
+    text-align: left; background: none; border: none; font-family: var(--mono);
+    font-size: 0.8rem; color: var(--ink-soft); cursor: pointer; padding: 0.2rem 0;
+  }
+  .example-btn:hover { color: var(--stamp); }
+  #retryNotice {
+    display: none; font-family: var(--mono); font-size: 0.78rem; color: var(--stamp);
+    margin-top: 0.75rem;
+  }
+  #reportBox {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 1.25rem; font-size: 0.85rem; white-space: pre-wrap; max-height: 420px;
+    overflow-y: auto; line-height: 1.6;
+  }
+  #reportBox:empty::before { content: 'Report will appear here once the Writer node finishes.'; color: var(--ink-soft); font-family: var(--mono); font-size: 0.8rem; }
+
+  footer {
+    max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 4rem;
+    border-top: 1px solid var(--rule); font-size: 0.85rem; color: var(--ink-soft);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+  }
+  footer a { text-decoration: none; border-bottom: 1px solid var(--rule); }
+
+  @media (max-width: 800px) {
+    header.hero, .demo-grid { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 2.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 3v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    ResearchLoop AI
+  </div>
+  <ul>
+    <li><a href="#what">What it does</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#demo">Try it →</a></li>
+  </ul>
+</nav>
+
+<header class="hero">
+  <span class="eyebrow">LangGraph · MCP · Groq</span>
+  <h1>Ask once.<br/><em>Loop</em> through everything.</h1>
+  <p class="lede">ResearchLoop breaks your question into sub-questions, researches all of them in parallel, self-corrects if evidence is thin, then writes a cited report.</p>
+  <div class="cta-row">
+    <a href="#demo" class="btn">Try it live</a>
+    <a href="https://github.com/Yuvrajpawar45" class="btn-ghost">View source →</a>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="num">5</div><div class="lbl">LangGraph nodes</div></div>
+  <div class="stat"><div class="num">2</div><div class="lbl">MCP servers</div></div>
+  <div class="stat"><div class="num">4×</div><div class="lbl">Parallel sub-questions</div></div>
+  <div class="stat"><div class="num">10+</div><div class="lbl">Sources per query</div></div>
+</div>
+
+<section id="what">
+  <div class="section-eyebrow">What it does</div>
+  <h2>One question, four passes, one visible loop.</h2>
+  <p class="section-lede">Most AI tools answer from memory. ResearchLoop actively searches the live web and GitHub in parallel, scores what it finds, self-corrects if evidence is thin, and synthesizes it into a structured, cited report.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="icon-badge gold">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z"/></svg>
+      </div>
+      <h3>Query decomposition</h3>
+      <p>Your question is broken into 4 focused sub-questions — definition, comparison, use cases, and limitations — before any search begins.</p>
+    </div>
+    <div class="card">
+      <div class="icon-badge pine">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Live web + GitHub search, in parallel</h3>
+      <p>Tavily MCP searches the live web, GitHub MCP searches repositories — all 4 sub-questions run concurrently via LangGraph's Send() API, not one at a time.</p>
+    </div>
+    <div class="card">
+      <div class="icon-badge ink">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Batched LLM scoring + dedup</h3>
+      <p>Every sub-question's results are scored in one batched LLM call, then deduplicated by URL — only sources that clear the bar reach the Writer.</p>
+    </div>
+    <div class="card">
+      <div class="icon-badge gold">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Self-correction loop</h3>
+      <p>If too few sources clear the relevance bar, the graph loops back and retries once with a broader query — instead of writing a thin report anyway.</p>
+    </div>
+    <div class="card">
+      <div class="icon-badge pine">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Cited report synthesis</h3>
+      <p>The Writer node turns surviving sources into a structured markdown report with inline citations and a full sources list mapping each one back to its URL.</p>
+    </div>
+    <div class="card">
+      <div class="icon-badge ink">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 3 14h6l-1 8 10-12h-6z" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Groq inference, rate-limit aware</h3>
+      <p>Planner, scorer, and Writer run on Groq's llama-3.3-70b-versatile, with automatic fallback to llama-3.1-8b-instant and graceful degradation if both are saturated.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-eyebrow">How it works</div>
+  <h2>Five nodes. One self-correcting loop.</h2>
+  <div class="cards">
+    <div class="card">
+      <span class="tag">Planner</span>
+      <h3>decompose_query</h3>
+      <p>Calls Groq with a structured prompt to split your query into 4 sub-questions covering different angles.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Research (× parallel)</span>
+      <h3>research_one, fanned out via Send()</h3>
+      <p>All sub-questions run concurrently, not sequentially: Tavily MCP + GitHub MCP search, then one batched LLM call scores each sub-question's results.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Aggregate</span>
+      <h3>dedupe, rank, decide</h3>
+      <p>Merges every parallel branch's results, filters by relevance, dedupes by URL — then decides whether evidence is strong enough to write, or too thin.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Broaden (conditional)</span>
+      <h3>self-correction retry</h3>
+      <p>Fires only if aggregate finds too few relevant sources: re-queries once with the original, broader question instead of the narrow sub-questions.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Writer</span>
+      <h3>synthesize_report</h3>
+      <p>Takes the final ranked source list and writes a structured markdown report with numbered citations.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tech">
+  <div class="section-eyebrow">Tech stack</div>
+  <h2>What's under the hood</h2>
+  <div class="chips">
+    <span class="chip">LangGraph</span>
+    <span class="chip">Send() parallel fan-out</span>
+    <span class="chip">langchain-mcp-adapters</span>
+    <span class="chip">Groq llama-3.3-70b</span>
+    <span class="chip">Tavily MCP</span>
+    <span class="chip">GitHub MCP</span>
+    <span class="chip">FastAPI</span>
+    <span class="chip">SSE Streaming</span>
+    <span class="chip">slowapi rate limiting</span>
+    <span class="chip">pytest</span>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="section-eyebrow">Live demo</div>
+  <h2>Ask it something. Watch the loop run.</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="loop-wrap">
+        <svg id="loopSvg" width="300" height="290" viewBox="0 0 300 290">
+          <path class="loop-path" d="M 195,56 A 110,110 0 0,1 260,151" />
+          <path class="loop-path" d="M 227,234 A 110,110 0 0,1 73,234" />
+          <path class="loop-path" d="M 40,151 A 110,110 0 0,1 105,56" />
+
+          <g class="loop-node" data-node="planner">
+            <circle cx="150" cy="46" r="46"/>
+            <text x="150" y="41" text-anchor="middle" class="label">Planner</text>
+            <text x="150" y="57" text-anchor="middle">decompose</text>
+          </g>
+          <g class="loop-node" data-node="research">
+            <circle cx="252" cy="196" r="46"/>
+            <text x="252" y="190" text-anchor="middle" class="label">Research</text>
+            <text x="252" y="206" text-anchor="middle">parallel ×4</text>
+          </g>
+          <g class="loop-node" data-node="writer">
+            <circle cx="48" cy="196" r="46"/>
+            <text x="48" y="191" text-anchor="middle" class="label">Writer</text>
+            <text x="48" y="207" text-anchor="middle">synthesize</text>
+          </g>
+
+          <circle class="loop-subdot" data-sub="0" cx="252" cy="148" r="5"/>
+          <circle class="loop-subdot" data-sub="1" cx="296" cy="178" r="5"/>
+          <circle class="loop-subdot" data-sub="2" cx="280" cy="228" r="5"/>
+          <circle class="loop-subdot" data-sub="3" cx="224" cy="228" r="5"/>
+        </svg>
+      </div>
+      <input id="query" type="text" placeholder="e.g. What is Model Context Protocol?" />
+      <div class="examples">
+        <button class="example-btn" onclick="fillExample(this)">→ What is Model Context Protocol?</button>
+        <button class="example-btn" onclick="fillExample(this)">→ How does RAG work in production LLM systems?</button>
+        <button class="example-btn" onclick="fillExample(this)">→ Best vector databases for AI applications 2026</button>
+      </div>
+      <div id="retryNotice">↻ Evidence was thin — broadening search and retrying...</div>
+      <br/>
+      <button class="btn" id="runBtn" onclick="runResearch()">Research</button>
+    </div>
+    <div id="reportBox"></div>
+  </div>
+</section>
+
+<footer>
+  <div>ResearchLoop AI — a portfolio project demonstrating LangGraph orchestration and MCP tool integration.</div>
+  <div><a href="https://github.com/Yuvrajpawar45">GitHub</a></div>
+</footer>
+
+<script>
+  const API_BASE = "http://localhost:8000";
+
+  function fillExample(btn) {
+    document.getElementById('query').value = btn.textContent.replace('→ ', '');
+  }
+
+  function setNodeState(node, state) {
+    const el = document.querySelector(`.loop-node[data-node="${node}"]`);
+    el.classList.remove('active', 'done');
+    if (state) el.classList.add(state);
+  }
+
+  let subDotIndex = 0;
+
+  function markNextSubDotDone() {
+    const dots = document.querySelectorAll('.loop-subdot');
+    const dot = dots[subDotIndex % dots.length];
+    dot.classList.remove('active');
+    dot.classList.add('done');
+    subDotIndex++;
+  }
+
+  function resetSubDots() {
+    document.querySelectorAll('.loop-subdot').forEach(d => d.classList.remove('active', 'done'));
+    subDotIndex = 0;
+  }
+
+  async function runResearch() {
+    const query = document.getElementById('query').value.trim();
+    if (!query) return;
+
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+    ['planner', 'research', 'writer'].forEach(n => setNodeState(n, null));
+    resetSubDots();
+    document.getElementById('retryNotice').style.display = 'none';
+    document.getElementById('reportBox').textContent = '';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/research/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      setNodeState('planner', 'active');
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        const chunks = buffer.split('\n\n');
+        buffer = chunks.pop();
+
+        for (const chunk of chunks) {
+          const lines = chunk.split('\n');
+          const eventLine = lines.find(l => l.startsWith('event:'));
+          const dataLine = lines.find(l => l.startsWith('data:'));
+          if (!eventLine || !dataLine) continue;
+
+          const eventType = eventLine.replace('event:', '').trim();
+          const data = JSON.parse(dataLine.replace('data:', '').trim());
+
+          if (eventType === 'node_update') {
+            if (data.node === 'planner') {
+              setNodeState('planner', 'done');
+              setNodeState('research', 'active');
+            }
+            if (data.node === 'research_one') {
+              markNextSubDotDone();
+            }
+            if (data.node === 'broaden') {
+              document.getElementById('retryNotice').style.display = 'block';
+              resetSubDots();
+            }
+            if (data.node === 'writer') {
+              document.getElementById('retryNotice').style.display = 'none';
+              setNodeState('research', 'done');
+              setNodeState('writer', 'active');
+              if (data.output.report) {
+                document.getElementById('reportBox').textContent = data.output.report;
+                setNodeState('writer', 'done');
+              }
+            }
+          }
+          if (eventType === 'error') {
+            document.getElementById('reportBox').textContent = 'Error: ' + data.detail;
+          }
+        }
+      }
+    } catch (err) {
+      document.getElementById('reportBox').textContent = 'Request failed — is the backend running at ' + API_BASE + '?';
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+{
+  "summary": {
+    "total_queries": 20,
+    "successful_runs": 20,
+    "errored_runs": 0,
+    "queries_passed": 19,
+    "pass_rate_pct": 95.0,
+    "overall_pct_sources_above_relevance_threshold": 98.2,
+    "avg_sources_per_query": 13.7,
+    "avg_elapsed_sec": 42.7,
+    "self_correction_fired_on_n_queries": 0
+  },
+  "results": [
+    {
+      "query": "What is Model Context Protocol?",
+      "elapsed_sec": 23.7,
+      "source_count": 13,
+      "avg_relevance": 0.855,
+      "pct_above_threshold": 100.0,
+      "citation_count": 6,
+      "report_length": 2263,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How does RAG work in production LLM systems?",
+      "elapsed_sec": 14.8,
+      "source_count": 10,
+      "avg_relevance": 0.84,
+      "pct_above_threshold": 100.0,
+      "citation_count": 4,
+      "report_length": 2350,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "Best vector databases for AI applications 2026",
+      "elapsed_sec": 16.2,
+      "source_count": 17,
+      "avg_relevance": 0.888,
+      "pct_above_threshold": 100.0,
+      "citation_count": 0,
+      "report_length": 4681,
+      "retries_used": 0,
+      "passed": false
+    },
+    {
+      "query": "What is LangGraph and how does it differ from LangChain?",
+      "elapsed_sec": 16.0,
+      "source_count": 16,
+      "avg_relevance": 0.828,
+      "pct_above_threshold": 93.8,
+      "citation_count": 16,
+      "report_length": 3466,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How do AI agents use tool calling?",
+      "elapsed_sec": 25.6,
+      "source_count": 12,
+      "avg_relevance": 0.896,
+      "pct_above_threshold": 100.0,
+      "citation_count": 6,
+      "report_length": 3601,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What is retrieval-augmented generation used for?",
+      "elapsed_sec": 51.6,
+      "source_count": 17,
+      "avg_relevance": 0.894,
+      "pct_above_threshold": 100.0,
+      "citation_count": 7,
+      "report_length": 3502,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "Compare FAISS vs Qdrant for vector search",
+      "elapsed_sec": 70.1,
+      "source_count": 17,
+      "avg_relevance": 0.841,
+      "pct_above_threshold": 100.0,
+      "citation_count": 17,
+      "report_length": 8114,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What is the difference between fine-tuning and RAG?",
+      "elapsed_sec": 56.1,
+      "source_count": 17,
+      "avg_relevance": 0.841,
+      "pct_above_threshold": 100.0,
+      "citation_count": 17,
+      "report_length": 7866,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How does Groq achieve fast LLM inference?",
+      "elapsed_sec": 54.9,
+      "source_count": 9,
+      "avg_relevance": 0.822,
+      "pct_above_threshold": 100.0,
+      "citation_count": 3,
+      "report_length": 2680,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What are the security risks of MCP servers?",
+      "elapsed_sec": 48.6,
+      "source_count": 11,
+      "avg_relevance": 0.909,
+      "pct_above_threshold": 100.0,
+      "citation_count": 11,
+      "report_length": 3073,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How do multi-agent systems coordinate tasks?",
+      "elapsed_sec": 46.5,
+      "source_count": 17,
+      "avg_relevance": 0.841,
+      "pct_above_threshold": 100.0,
+      "citation_count": 17,
+      "report_length": 3765,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What is a LangGraph StateGraph?",
+      "elapsed_sec": 45.8,
+      "source_count": 10,
+      "avg_relevance": 0.89,
+      "pct_above_threshold": 100.0,
+      "citation_count": 4,
+      "report_length": 3269,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How does semantic search differ from keyword search?",
+      "elapsed_sec": 47.1,
+      "source_count": 14,
+      "avg_relevance": 0.836,
+      "pct_above_threshold": 85.7,
+      "citation_count": 10,
+      "report_length": 4434,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What is prompt engineering?",
+      "elapsed_sec": 30.6,
+      "source_count": 9,
+      "avg_relevance": 0.844,
+      "pct_above_threshold": 100.0,
+      "citation_count": 9,
+      "report_length": 1905,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How do you evaluate a RAG pipeline?",
+      "elapsed_sec": 60.5,
+      "source_count": 18,
+      "avg_relevance": 0.839,
+      "pct_above_threshold": 100.0,
+      "citation_count": 18,
+      "report_length": 3649,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What is the role of embeddings in search?",
+      "elapsed_sec": 38.8,
+      "source_count": 17,
+      "avg_relevance": 0.859,
+      "pct_above_threshold": 100.0,
+      "citation_count": 17,
+      "report_length": 4198,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How does the Tavily search API work?",
+      "elapsed_sec": 43.8,
+      "source_count": 9,
+      "avg_relevance": 0.822,
+      "pct_above_threshold": 88.9,
+      "citation_count": 9,
+      "report_length": 5242,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What are common failure modes in agentic AI systems?",
+      "elapsed_sec": 62.5,
+      "source_count": 15,
+      "avg_relevance": 0.84,
+      "pct_above_threshold": 100.0,
+      "citation_count": 15,
+      "report_length": 7204,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "How does citation grounding reduce hallucination?",
+      "elapsed_sec": 38.6,
+      "source_count": 10,
+      "avg_relevance": 0.81,
+      "pct_above_threshold": 90.0,
+      "citation_count": 10,
+      "report_length": 5687,
+      "retries_used": 0,
+      "passed": true
+    },
+    {
+      "query": "What is the tradeoff between sequential and parallel agent execution?",
+      "elapsed_sec": 62.4,
+      "source_count": 15,
+      "avg_relevance": 0.853,
+      "pct_above_threshold": 100.0,
+      "citation_count": 7,
+      "report_length": 3964,
+      "retries_used": 0,
+      "passed": true
+    }
+  ]
+}

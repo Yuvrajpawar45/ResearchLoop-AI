@@ -1,0 +1,12 @@
+[build]
+builder = "nixpacks"
+
+[build.nixpacksPlan.phases.setup]
+nixPkgs = ["python311", "nodejs_20"]
+# nodejs_20 is required here because the Tavily and GitHub MCP servers run
+# as `npx` subprocesses, not just Python — a step easy to miss and get an
+# opaque "command not found: npx" error on deploy if skipped.
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/api/health"
