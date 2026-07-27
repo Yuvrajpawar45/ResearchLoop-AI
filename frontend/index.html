@@ -145,6 +145,10 @@
     display: none; font-family: var(--mono); font-size: 0.78rem; color: var(--stamp);
     margin-top: 0.75rem;
   }
+  .cold-start-note {
+    font-size: 0.78rem; color: var(--pine); margin-top: 0.6rem;
+    font-family: var(--mono); line-height: 1.5;
+  }
   #reportBox {
     background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
     padding: 1.25rem; font-size: 0.85rem; white-space: pre-wrap; max-height: 420px;
@@ -340,6 +344,7 @@
         <button class="example-btn" onclick="fillExample(this)">→ Best vector databases for AI applications 2026</button>
       </div>
       <div id="retryNotice">↻ Evidence was thin — broadening search and retrying...</div>
+      <p class="cold-start-note">⏱ Backend runs on a free tier — the first request after inactivity can take 30–40s to wake up. Totally normal, not broken.</p>
       <br/>
       <button class="btn" id="runBtn" onclick="runResearch()">Research</button>
     </div>
@@ -353,7 +358,7 @@
 </footer>
 
 <script>
-  const API_BASE = "http://localhost:8000";
+  const API_BASE = "https://researchloop-ai.onrender.com";
 
   function fillExample(btn) {
     document.getElementById('query').value = btn.textContent.replace('→ ', '');
@@ -389,7 +394,7 @@
     ['planner', 'research', 'writer'].forEach(n => setNodeState(n, null));
     resetSubDots();
     document.getElementById('retryNotice').style.display = 'none';
-    document.getElementById('reportBox').textContent = '';
+    document.getElementById('reportBox').textContent = 'Contacting the backend — if it\'s been idle, this can take up to 40s to wake up...';
 
     try {
       const res = await fetch(`${API_BASE}/api/research/stream`, {
